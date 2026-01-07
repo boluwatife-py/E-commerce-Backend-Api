@@ -1,179 +1,164 @@
+# Ecommerce API with FastAPI
 
-# Ecommerce API with Fast API Framework
+An **Ecommerce API** built with **FastAPI**, PostgreSQL, and JWT authentication for secure, scalable, and efficient backend operations.
 
-A simple Ecommerce API built with Fast API Framework
+This API provides comprehensive features for managing products, categories, users, and shopping carts, with built-in search, filtering, and account management functionality.
 
-## Table of Contents
+---
 
-- [Ecommerce API with Fast API Framework](#ecommerce-api-with-fast-api-framework)
-  - [Table of Contents](#table-of-contents)
-  - [Demo](#demo)
-  - [Features](#features)
-  - [Technologies Used](#technologies-used)
-  - [API Endpoints](#api-endpoints)
-  - [Screenshots](#screenshots)
-  - [Installation](#installation)
-  - [Usage](#usage)
-  - [Contributing](#contributing)
-  - [License](#license)
+## Overview
 
+This Ecommerce API is designed to provide a **full backend solution** for online stores. Key objectives include:
+
+* Scalable and maintainable code architecture.
+* Fast API response times leveraging **FastAPI** async capabilities.
+* Secure authentication and authorization using **JWT**.
+* Easy integration with frontend applications (React, Vue, etc.).
+* Complete API documentation with **Swagger UI** and **ReDoc**.
+
+### Example Endpoint Usage
+
+```python
+# Fetch all products
+import requests
+
+response = requests.get("http://127.0.0.1:8000/products/")
+print(response.json())
+
+# Authenticate a user
+login_data = {"email": "user@example.com", "password": "securepassword"}
+response = requests.post("http://127.0.0.1:8000/auth/login/", json=login_data)
+access_token = response.json()["access_token"]
+```
+
+---
+
+## Technical Highlights
+
+* **FastAPI for High Performance:** Built on top of Starlette, FastAPI provides **async-first** performance and automatic data validation with **Pydantic**.
+* **JWT Authentication:** Secure user login with **access and refresh tokens**, supporting fine-grained authorization.
+* **Database Integration:** PostgreSQL with **SQLAlchemy ORM** for structured and reliable data storage.
+* **Real-time Features:** Optionally integrated with **Supabase** for real-time updates and authentication.
+* **Comprehensive CRUD Operations:** Products, categories, and users can be **created, read, updated, and deleted** easily.
+* **Advanced Search & Filtering:** Users can filter and search products efficiently for better UX.
+* **Documentation-Ready:** Full API documentation available via Swagger UI and ReDoc.
+
+```python
+# Example Product CRUD with FastAPI
+from fastapi import FastAPI, HTTPException
+from models import Product, ProductCreate
+from database import SessionLocal
+
+app = FastAPI()
+
+@app.post("/products/")
+def create_product(product: ProductCreate):
+    db = SessionLocal()
+    db_product = Product(**product.dict())
+    db.add(db_product)
+    db.commit()
+    db.refresh(db_product)
+    return db_product
+```
+
+---
 
 ## Demo
 
-- **Online Code**
-	- [Github](https://github.com/boluwatife-py/E-commerce-backend-fastapi-python)
+* **Source Code:** [GitHub Repository](https://github.com/boluwatife-py/E-commerce-backend-fastapi-python)
+* **Live API Testing:** Swagger UI at `/docs` and ReDoc at `/redoc` when running locally.
+
+---
 
 ## Features
 
-- **Product Endpoints:**
-	- Comprehensive CRUD operations for managing product details, covering creation, retrieval, updating, and deletion.
-- **User Authentication:**
-	- Implementation of secure user authentication using JWT (JSON Web Token) for robust access control and identity verification.
-- **Cart Management:**
-	- Robust operations for managing shopping carts, empowering users to effortlessly add, remove, or update items in their carts.
-- **Search and Filter:**
-	- Implementation of advanced search and filter functionalities to elevate the product browsing experience, allowing users to find specific information efficiently.
-- **Account Management:**
-	- User-friendly operations for managing user accounts, enabling users to retrieve, update, or delete their account information.
-- **Swagger / FastAPI Integration:**
-	- Seamless integration of Swagger UI or ReDoc for comprehensive API documentation. This ensures developers have clear and accessible documentation to understand and utilize the API effectively.
+* **Product Management:** CRUD operations for products with detailed metadata.
+* **Category Management:** CRUD operations for product categories.
+* **User Management:** Admin-only and user-specific endpoints.
+* **Authentication:** Sign-up, login, JWT-based access and refresh tokens.
+* **Cart Management:** Add, remove, update cart items.
+* **Search & Filter:** Advanced search by product attributes and categories.
+* **Account Management:** Users can view, update, or delete their accounts.
+* **API Documentation:** Auto-generated via FastAPI (`/docs` & `/redoc`).
 
+---
 
 ## Technologies Used
 
-- **FastAPI:** 
-	- A modern, fast web framework for building APIs with Python 3.7+ based on standard Python type hints.
-- **PostgreSQL:** 
-	- A powerful open-source relational database management system used for data storage.
-- **Supabase:** 
-	- Utilizing Supabase for its real-time database capabilities and other features.
-- **JWT Authentication:** 
-	- Implementing JSON Web Token authentication for secure user authentication.
-- **Pydantic:** 
-	- A data validation and settings management library for Python, often used with FastAPI.
-- **Uvicorn:** 
-	- A lightweight ASGI server that serves FastAPI applications. It is used for running FastAPI applications in production.
-- **SQLAlchemy:** 
-	- An SQL toolkit and Object-Relational Mapping (ORM) library for Python, useful for database interactions.
+* **FastAPI** – Modern Python web framework.
+* **PostgreSQL** – Relational database system.
+* **Supabase** – Real-time database and auth backend.
+* **SQLAlchemy** – ORM for database operations.
+* **Pydantic** – Data validation and serialization.
+* **Uvicorn** – ASGI server for running FastAPI apps.
+* **JWT** – Secure authentication.
 
+---
 
+## API Endpoints (Highlights)
 
-## API Endpoints
+| Endpoint          | Method | Description                       | User Type |
+| ----------------- | ------ | --------------------------------- | --------- |
+| `/products/`      | GET    | List all products                 | User      |
+| `/products/`      | POST   | Create a new product              | Admin     |
+| `/products/{id}/` | GET    | Retrieve product details          | User      |
+| `/auth/signup/`   | POST   | Register new user                 | User      |
+| `/auth/login/`    | POST   | Authenticate and generate tokens  | User      |
+| `/auth/refresh/`  | POST   | Refresh access token              | User      |
+| `/account/`       | GET    | Get authenticated user info       | User      |
+| `/account/`       | PUT    | Update authenticated user info    | User      |
+| `/account/`       | DELETE | Remove authenticated user account | User      |
 
+> Full API endpoints available in the [GitHub README](https://github.com/boluwatife-py/E-commerce-backend-fastapi-python).
 
-
-| Endpoint                          | HTTP Method | Path                                      | Description                                             | User Type       |
-|-----------------------------------|-------------|-------------------------------------------|---------------------------------------------------------|-----------------|
-| Product List                      | GET         | `/products/`                              | Get a list of all products                               | User            |
-| Create Product                    | POST        | `/products/`                              | Create a new product                                     | Admin           |
-| Retrieve Product by ID            | GET         | `/products/{id}/`                         | Get details of a specific product by ID                  | User            |
-| Update Product by ID              | PUT         | `/products/{id}/`                         | Update details of a specific product by ID               | Admin           |
-| Delete Product by ID              | DELETE      | `/products/{id}/`                         | Delete a specific product by ID                          | Admin           |
-| Category List                     | GET         | `/categories/`                            | Get a list of all categories                             | User            |
-| Create Category                   | POST        | `/categories/`                            | Create a new category                                    | Admin           |
-| Retrieve Category by ID           | GET         | `/categories/{id}/`                       | Get details of a specific category by ID                 | User            |
-| Update Category by ID             | PUT         | `/categories/{id}/`                       | Update details of a specific category by ID              | Admin           |
-| Delete Category by ID             | DELETE      | `/categories/{id}/`                       | Delete a specific category by ID                         | Admin           |
-| User List (Admin Only)            | GET         | `/users/`                                 | Get a list of all users (admin-only)                     | Admin           |
-| Get User By ID (Admin Only)       | GET         | `/users/{user_id}/`                       | Get details of a specific user by ID (admin-only)       | Admin           |
-| Create User (Admin Only)          | POST        | `/users/`                                 | Create a new user (admin-only)                           | Admin           |
-| Update User By ID (Admin Only)    | PUT         | `/users/{user_id}/`                       | Update details of a specific user by ID (admin-only)    | Admin           |
-| Delete User By ID (Admin Only)    | DELETE      | `/users/{user_id}/`                       | Delete a specific user by ID (admin-only)               | Admin           |
-| Get My Account Info               | GET         | `/account/`                               | Get information about the authenticated user            | User            |
-| Edit My Account Info              | PUT         | `/account/`                               | Edit the information of the authenticated user           | User            |
-| Remove My Account                 | DELETE      | `/account/`                               | Remove the account of the authenticated user             | User            |
-| User Signup                       | POST        | `/auth/signup/`                           | Register a new user                                      | User            |
-| User Login                        | POST        | `/auth/login/`                            | Authenticate and generate access tokens for a user       | User            |
-| Refresh Access Token              | POST        | `/auth/refresh/`                          | Refresh an access token using a refresh token             | User            |
-| Swagger UI                        | -           | `/docs/`                                  | Swagger UI for API documentation                         | User            |
-| Swagger JSON (without UI)         | -           | `/openapi.json`                           | OpenAPI JSON for API documentation without UI           | User            |
-| ReDoc UI                          | -           | `/redoc/`                                | ReDoc UI for API documentation                           | User            |
-
-
-
-## Screenshots 
-
-![image](https://github.com/boluwatife-py/E-commerce-backend-fastapi-python/assets/118107025/d7262b0d-161c-4324-b343-27eeb0ec302a)
-
-
-![image](https://github.com/boluwatife-py/E-commerce-backend-fastapi-python/assets/118107025/0d8bc0bf-0eac-4e96-812d-f3e09783efb0)
+---
 
 ## Installation
 
-1. **Clone the repository:**
+```bash
+# Clone repository
+git clone https://github.com/boluwatife-py/E-commerce-backend-fastapi-python.git
+cd E-commerce-backend-fastapi-python
 
-   ```bash
-   git clone https://github.com/boluwatife-py/E-commerce-backend-fastapi-python.git
-   ```
+# Create virtual environment
+python3 -m venv venv
+source venv/bin/activate   # Linux/macOS
+venv\Scripts\activate      # Windows
 
-2. **Navigate to the project directory:**
+# Install dependencies
+pip install -r requirements.txt
+```
 
-   ```bash
-   Ecommerce-Api
-   ```
-
-3. **Create a virtual environment:**
-
-   ```bash
-   python3 -m venv venv
-   ```
-
-4. **Activate the virtual environment:**
-
-   On Windows:
-
-   ```bash
-   venv\Scripts\activate
-   ```
-
-   On macOS and Linux:
-
-   ```bash
-   source venv/bin/activate
-   ```
-
-5. **Install dependencies:**
-
-   ```bash
-   pip install -r requirements.txt
-   ```
+---
 
 ## Usage
 
-1. **Run Alembic migrations:**
+```bash
+# Run database migrations
+python migrate.py
 
-   ```bash
-   python migrate.py
-   ```
+# Start FastAPI server
+python run.py
 
-   This will apply any pending database migrations.
+# Access documentation
+# Swagger UI: http://127.0.0.1:8000/docs/
+# ReDoc: http://127.0.0.1:8000/redoc/
+```
 
-2. **Run the FastAPI development server:**
-
-   ```bash
-   python run.py
-   ```
-
-   The API will be accessible at [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
-
-3. **Access the Swagger UI and ReDoc:**
-
-   - Swagger UI: [http://127.0.0.1:8000/docs/](http://127.0.0.1:8000/docs/)
-   - ReDoc: [http://127.0.0.1:8000/redoc/](http://127.0.0.1:8000/redoc/)
-
-
-
-
-
-
+---
 
 ## Contributing
 
-Feel free to contribute to the project. Fork the repository, make changes, and submit a pull request.
+* Fork the repository
+* Create your branch: `git checkout -b feature-name`
+* Make changes and commit: `git commit -m 'Add new feature'`
+* Push to branch: `git push origin feature-name`
+* Open a pull request
+
+---
 
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
 
-
-
+---
